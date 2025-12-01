@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { env } from ".lib/env.js";
+import { ENV } from "../lib/env.js";
 
 export const resendClient = new Resend(ENV.RESEND_API_KEY);
 
