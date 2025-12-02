@@ -99,8 +99,9 @@ export const updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
-      { new: true }.select("-password")
-    );
+      { new: true }
+    ).select("-password");
+    
     res.status(200).json({ updatedUser });
   } catch (error) {
     console.log("Error updating profile:", error);
