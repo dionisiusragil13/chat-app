@@ -2,14 +2,24 @@ import React, { useEffect } from "react";
 import useChatStore from "../store/useChatStore";
 import useAuthStore from "..store/useAuthStore";
 import NoChatHistoryPlaceholder from "./NoChatHistoryPlaceholder";
+import MessageInput from "./MessageInput";
+import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
 
 function ChatContainer() {
   const { authUser } = useAuthStore();
   const { messages, getMessageByUserId, selectedUser } = useChatStore();
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessageByUserId(selectedUser._id);
   }, [selectedUser, getMessageByUserId]);
+
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
     <>
       <ChatHeader />
