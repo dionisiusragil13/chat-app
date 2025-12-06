@@ -78,6 +78,31 @@ const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message || "something went wrong");
     }
   },
+
+  subscribeToMessage: () => {
+    const { selectedUser, isSoundEnabeld } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+    socket.on("newMessage", (newMessage) => {
+      const isMessafeSentFronSelectedUser =
+        newMessage.senderId === selectedUser._id;
+      if (!isMessafeSentFronSelectedUser) return;
+      const currentMessages = get().messages;
+      set({ messages: [...currentMessages, newMessage] });
+      if (isSoundEnabeld) {
+        const notificationSound = new Audio("/sounds/notification.mp3");
+        notificationSound.currentTime = 0;
+        notificationSound
+          .play()
+          .catch((e) => console.log("audio play failed", e));
+      }
+    });
+  },
+  unSubscribeFromMessage: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  },
 }));
 
 export default useChatStore;
